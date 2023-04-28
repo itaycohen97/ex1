@@ -11,8 +11,9 @@ if [ ! -f $1 ]; then
     exit 1
 fi
 
-
+echo "Now Building zip archive from file $1"
 zip -r parking_lot_code.zip $1
+echo "Building zip archive succedded"
 
 # Create role
 ARN=$(aws iam create-role \
@@ -40,11 +41,11 @@ aws iam attach-role-policy \
 # Give Permisssions to new policy for AWSLambdaRole
 aws iam attach-role-policy \
     --role-name parking-lot-lambda-role-$2 \
-    --policy-arn arn:aws:iam::aws:policy/service-role/AWSLambdaRole \
+    --policy-arn arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole \
 
 
-echo ""
-sleep 20
+echo "Generated security role for function, now generating function"
+sleep 10
 
 
 # Lambda creation
@@ -59,9 +60,9 @@ aws lambda create-function \
 
 
 # Add a Function URL
-POSSIBLE_OUTPUT=$(aws lambda create-function-url-config \
+aws lambda create-function-url-config \
     --function-name parking-lot-lambda-$2 \
-    --auth-type AWS_IAM)
+    --auth-type NONE
 
 # Add permission URL
 aws lambda add-permission \
@@ -71,6 +72,5 @@ aws lambda add-permission \
     --action lambda:InvokeFunction \
 
 
-  echo "$POSSIBLE_OUTPUT"
-  exit 0
+exit 0
 
