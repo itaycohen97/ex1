@@ -58,19 +58,19 @@ aws lambda create-function \
 
 
 
-# # Add a Function URL
-# POSSIBLE_OUTPUT=$(aws lambda create-function-url-config \
-#     --function-name parking-lot-lambda-$2 \
-#     --auth-type NONE)
+# Add a Function URL
+POSSIBLE_OUTPUT=$(aws lambda create-function-url-config \
+    --function-name parking-lot-lambda-$2 \
+    --auth-type AWS_IAM)
 
-# # Add permission URL
-# aws lambda add-permission \
-#     --function-name parking-lot-lambda-$2 \
-#     --principal "*" \
-#     --statement-id "InvokePermission" \
-#     --action lambda:InvokeFunction \
+# Add permission URL
+aws lambda add-permission \
+    --function-name parking-lot-lambda-$2 \
+    --principal "*" \
+    --statement-id "InvokePermission" \
+    --action lambda:InvokeFunction \
 
 
-#   echo "$POSSIBLE_OUTPUT"
-#   exit 0
+  echo "$POSSIBLE_OUTPUT"
+  exit 0
 
