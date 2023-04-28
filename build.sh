@@ -18,7 +18,7 @@ zip -r parking_lot_code.zip $1
 ROLE=$(aws iam create-role \
     --role-name parking-lot-lambda-role \
     --assume-role-policy-document '{
-        "Version": "2023-04-28",
+        "Version": "2012-10-17",
         "Statement": [
             {
                 "Sid": "",
@@ -29,9 +29,10 @@ ROLE=$(aws iam create-role \
                 "Action": "sts:AssumeRole"
             }
         ]
-    }')
+    }'\
+    --query 'Role.Arn')
 
-  echo "$ROLE   \n/n"
+  echo "$ROLE"
 
 
 # # Lambda creation
