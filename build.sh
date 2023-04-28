@@ -1,20 +1,31 @@
 #!/bin/bash
 
 # Check if the script was called with 3 arguments
-if [ $# -ne 3 ]; then
-  echo "Usage: $0 <arg1> <arg2> <arg3>"
+if [ $# -ne 1 ]; then
+  echo "Usage: $0 <arg1 - python handler filw>"
   exit 1
 fi
 
+if [ ! -f $1 ]; then
+    echo "File not found!"
+    exit 1
+fi
+
+zip -r parking_lot_code.zip $1
 
 # Lambda creation
 aws lambda create-function \
   --function-name parking-lot-lambda \
   --runtime python3.10 \
   --handler lambda_function.lambda_handler \
-  --zip-file fileb://$1
+  --zip-file fileb://parking_lot_code.zip
 
 
-# Print the arguments
+# Add a Function URL
+POSSIBLE_OUTPUT=$(aws lambda create-function-url-config \
+    --function-name my-function \
+    --auth-type NONE)
 
-echo "The arguments are: $1, $2, and $3"
+
+  echo "$POSSIBLE_OUTPUT   \n/n"
+
