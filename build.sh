@@ -32,9 +32,6 @@ ARN=$(aws iam create-role \
     }'\
     --query Role.Arn)
 
-    echo "$ARN"
-    echo "${ARN//\"/}"
-
 # Give Permisssions to new policy for read/write to dynamodb
 aws iam attach-role-policy \
     --role-name parking-lot-lambda-role \
@@ -47,13 +44,21 @@ aws lambda create-function \
   --runtime python3.10 \
   --handler lambda_function.lambda_handler \
   --zip-file fileb://parking_lot_code.zip \
-  --role $ARN
+  --role ${ARN//\"/}
 
 
 # Add a Function URL
 POSSIBLE_OUTPUT=$(aws lambda create-function-url-config \
     --function-name parking-lot-lambda \
     --auth-type NONE)
+
+# Add permission URL
+aws lambda add-permission \
+    --function-name parking-lot-lambda \
+    --principal "*" \
+    --statement-id "InvokePermission" \
+    --action lambda:InvokeFunction \
+    --source-account "*"
 
 
   echo "$POSSIBLE_OUTPUT"
