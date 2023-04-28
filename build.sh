@@ -2,7 +2,7 @@
 
 # Check if the script was called with 3 arguments
 if [ $# -ne 2 ]; then
-  echo "Usage: $0 <arg1 - python handler filw> <arg2 - naming prefix>"
+  echo "Usage: $0 <arg1 - python handler file> <arg2 - naming prefix>"
   exit 1
 fi
 
@@ -36,7 +36,11 @@ ARN=$(aws iam create-role \
 aws iam attach-role-policy \
     --role-name parking-lot-lambda-role-$2 \
     --policy-arn arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess \
-
+    
+# Give Permisssions to new policy for AWSLambdaRole
+aws iam attach-role-policy \
+    --role-name parking-lot-lambda-role-$2 \
+    --policy-arn arn:aws:iam::aws:policy/service-role/AWSLambdaRole \
 
 # Lambda creation
 aws lambda create-function \
