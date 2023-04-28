@@ -11,21 +11,42 @@ if [ ! -f $1 ]; then
     exit 1
 fi
 
+
 zip -r parking_lot_code.zip $1
 
-# Lambda creation
-aws lambda create-function \
-  --function-name parking-lot-lambda \
-  --runtime python3.10 \
-  --handler lambda_function.lambda_handler \
-  --zip-file fileb://parking_lot_code.zip
+# Create role
+ROLE=$(aws iam create-role \
+    --role-name parking-lot-lambda-role \
+    --assume-role-policy-document '{
+        "Version": "2023-04-28",
+        "Statement": [
+            {
+                "Sid": "",
+                "Effect": "Allow",
+                "Principal": {
+                    "Service": "lambda.amazonaws.com"
+                },
+                "Action": "sts:AssumeRole"
+            }
+        ]
+    }')
+
+  echo "$ROLE   \n/n"
 
 
-# Add a Function URL
-POSSIBLE_OUTPUT=$(aws lambda create-function-url-config \
-    --function-name my-function \
-    --auth-type NONE)
+# # Lambda creation
+# aws lambda create-function \
+#   --function-name parking-lot-lambda \
+#   --runtime python3.10 \
+#   --handler lambda_function.lambda_handler \
+#   --zip-file fileb://parking_lot_code.zip
 
 
-  echo "$POSSIBLE_OUTPUT   \n/n"
+# # Add a Function URL
+# POSSIBLE_OUTPUT=$(aws lambda create-function-url-config \
+#     --function-name parking-lot-lambda \
+#     --auth-type NONE)
+
+
+#   echo "$POSSIBLE_OUTPUT   \n/n"
 
