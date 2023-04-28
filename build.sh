@@ -30,7 +30,10 @@ ARN=$(aws iam create-role \
             }
         ]
     }'\
-    --query 'Role.Arn')
+    --query Role.Arn)
+
+    echo "$ARN"
+    echo "${ARN//\"/}"
 
 # Give Permisssions to new policy for read/write to dynamodb
 aws iam attach-role-policy \
@@ -47,7 +50,7 @@ aws lambda create-function \
   --role $ARN
 
 
-Add a Function URL
+# Add a Function URL
 POSSIBLE_OUTPUT=$(aws lambda create-function-url-config \
     --function-name parking-lot-lambda \
     --auth-type NONE)
