@@ -71,6 +71,21 @@ aws lambda add-permission \
     --statement-id "InvokePermission" \
     --action lambda:InvokeFunction \
 
+# Define the policy document
+POLICY_DOCUMENT='{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "lambda:InvokeFunction",
+      "Resource": "*"
+    }
+  ]
+}'
+
+# Set the policy for the Lambda function
+aws lambda add-permission --function-name $FUNCTION_NAME --statement-id AllowPublicInvocation --action "lambda:InvokeFunction" --principal "*" --source-arn "arn:aws:execute-api:<your-region>:<your-account-id>:<api-gateway-id>/*/*/*" --source-account "<your-account-id>" --statement "$POLICY_DOCUMENT"
 
 exit 0
 
