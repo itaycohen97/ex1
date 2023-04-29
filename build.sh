@@ -62,7 +62,7 @@ FUNC_ARN=$(aws lambda create-function \
   --region eu-west-1 \
   --function-name $FUNCTION_NAME \
   --runtime python3.10 \
-  --handler parking_lot_code.lambda_handler \
+  --handler parking_lot_code.handler.lambda_handler \
   --zip-file fileb://parking_lot_code.zip \
   --no-cli-pager \
   --role $(aws iam get-role --role-name $ROLE_NAME --query 'Role.Arn' --output text) \

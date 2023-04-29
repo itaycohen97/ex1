@@ -1,1 +1,1 @@
-DB_NAME = "parking-lot-db-102"
+DB_NAME = "parking-lot-db-00"
