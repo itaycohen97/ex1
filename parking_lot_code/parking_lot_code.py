@@ -1,15 +1,16 @@
 import json, boto3, time, re
+from parking_lot_code.db_name import DB_NAME
 
 
-parking_lot_db = boto3.resource("dynamodb").Table("parking-lot-ex")
+parking_lot_db = boto3.resource("dynamodb").Table(DB_NAME)
 
 
 def lambda_handler(event, context):
     match event.get("rawPath", "/"):
         case "/entry":
             args = event.get("queryStringParameters", {})
-            return_id = re.sub("[^0-9]", "",args["plate"]+args["parkingLot"])
             if "parkingLot" in args and "plate" in args:
+                return_id = re.sub("[^0-9]", "",args["plate"]+args["parkingLot"])
                 parking_lot_db.put_item(Item={"id":return_id, "license_plate":args["plate"], "parking_lot":args["parkingLot"], "enter_time":str(time.time())})
                 return {
             'statusCode': 200,
@@ -44,7 +45,13 @@ def lambda_handler(event, context):
                 'statusCode': 200,
                 'body': "Wrong Ticket ID!"
                             }
-                    
+
+        case "/":
+                                                          return {
+                'statusCode': 200,
+                'body': "usage - \nPOST /entry?plate=123-123-123&parkingLot=382\nPOST /exit?ticketId=123123123382"
+                            }
+
         case _:
             return {
         'statusCode': 400,
